@@ -1,0 +1,5 @@
+work/
+data_raw/*
+!data_raw/slope_by_dong.txt
+__pycache__/
+*.zip
