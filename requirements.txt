@@ -4,7 +4,10 @@ numpy
 lightgbm>=4.7
 shap>=0.51
 scikit-learn
+statsmodels
+openpyxl
 shapely>=2.0
 geopandas
 matplotlib
 koreanize-matplotlib
+Pillow
