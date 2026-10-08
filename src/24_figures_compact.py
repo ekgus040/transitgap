@@ -23,7 +23,7 @@ h=con.execute("select left(st,2) hr, sum(cnt)/4 v from allw where left(o,2)='11'
 P=pd.read_csv('out/priority_carbon.csv'); lo,ba,hi=P['연간배출_t'].tolist(); SL,SB,SH=111613,247256,308638
 fig,(a1,a2)=plt.subplots(1,2,figsize=(11,3.1),gridspec_kw={'width_ratios':[1,1.15]})
 a1.plot(h.hr.astype(int),h.v/1000,color=S1,lw=2); a1.fill_between(h.hr.astype(int),h.v/1000,color=S1,alpha=0.08)
-a1.set_xticks(range(0,24,3)); a1.set_xlabel('출발 시각'); a1.set_ylabel('천 건/일')
+a1.set_xticks(range(0,24,3)); a1.set_xlabel('출발 시각'); a1.set_ylabel('천 건/시간(4일 평균)')
 a1.axvspan(10.5,13.5,color=GRID,alpha=0.6,lw=0); a1.text(12,h.v.max()/1000*0.1,'낮 생활 이동',ha='center',fontsize=10,color=T2)
 a1.set_title('(가) 1~5km 차량 이동 시간대 분포',fontsize=11.5); a1.grid(axis='y',color=GRID,lw=0.6)
 rows=[('40곳 10% 전환',lo*.1,ba*.1,hi*.1,S1),('40곳 20% 전환',lo*.2,ba*.2,hi*.2,S1),('40곳 30% 전환',lo*.3,ba*.3,hi*.3,S1),('서울 전체 10%(잠재량)',SL*.1,SB*.1,SH*.1,'#8a8984')]
