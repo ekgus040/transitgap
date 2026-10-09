@@ -9,9 +9,9 @@
 날짜별 안정성,2026-08-29,40.1%,
 공백 지역 기준,상위 30% 기준,"49곳, 기본(상위25%) 34곳과 겹침 34곳",
 공백 지역 기준,상위 20% 기준,"22곳, 기본(상위25%) 34곳과 겹침 22곳",
-모델 성능,공간 교차검증(출발 구 단위),R² 0.246,
-모델 성능,무작위 교차검증,R² 0.560,공간 CV보다 높으면 공간 과적합 주의
-SHAP 순위 안정성,시드 3회 상위 5개 변수,"dist,o_slope_pct,o_bus_density,d_sub_dist_km,d_bus_density / dist,o_bus_density,d_sub_dist_km,o_slope_pct,d_bus_density / dist,o_slope_pct,d_sub_dist_km,o_bus_density,d_bus_density",
+모델 성능,공간 교차검증(출발 구 단위),R² 0.234,
+모델 성능,무작위 교차검증,R² 0.562,공간 CV보다 높으면 공간 과적합 주의
+SHAP 순위 안정성,시드 3회 상위 5개 변수,"dist,o_slope_pct,d_sub_dist_km,o_bus_density,d_bus_density / dist,o_slope_pct,d_sub_dist_km,o_bus_density,d_bus_density / dist,o_slope_pct,o_bus_density,d_sub_dist_km,d_bus_density",
 탄소 (연간),"보수: 재차1.8, 우회1.2, 187g/km","111,613 tCO2, 10% 전환 시 11,161 t",
 탄소 (연간),"기본: 재차1.3, 우회1.3, 220g/km","247,256 tCO2, 10% 전환 시 24,726 t",
 탄소 (연간),"높음: 재차1.3, 우회1.4, 255g/km","308,638 tCO2, 10% 전환 시 30,864 t",
