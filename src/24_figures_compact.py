@@ -30,9 +30,9 @@ rows=[('40곳 10% 전환',lo*.1,ba*.1,hi*.1,S1),('40곳 20% 전환',lo*.2,ba*.2,
 for i,(l,a,b,c,col) in enumerate(rows[::-1]):
     a2.plot([a/1000,c/1000],[i,i],color=col,lw=6,solid_capstyle='round',alpha=0.35); a2.plot(b/1000,i,'o',color=col,ms=8,mec=SURF,mew=2)
     a2.text(c/1000+0.6,i,f"{a/1000:.1f}~{c/1000:.1f}천 t",va='center',fontsize=10,color=T2)
-a2.axvline(0.962,color=T2,lw=1,ls='--'); a2.text(1.2,3.45,'따릉이 인증 감축량(962t)',fontsize=9.5,color=T2)
-a2.set_yticks(range(4),[r[0] for r in rows[::-1]]); a2.set_xlabel('연간 CO2 감축량 (천 t)'); a2.set_ylim(-0.6,3.8); a2.set_xlim(0,SH*0.1/1000*1.4)
-a2.set_title('(나) 전환 시 탄소 감축 시나리오',fontsize=11.5); a2.grid(axis='x',color=GRID,lw=0.6)
+a2.axvline(0.962,color=T2,lw=1,ls='--'); a2.text(1.2,3.45,'참고: 따릉이 인증 감축량(962t)',fontsize=9.5,color=T2)
+a2.set_yticks(range(4),[r[0] for r in rows[::-1]]); a2.set_xlabel('연간 차량 배출 회피 잠재량 (천 tCO2)'); a2.set_ylim(-0.6,3.8); a2.set_xlim(0,SH*0.1/1000*1.4)
+a2.set_title('(나) 전환 시 차량 배출 회피 잠재량',fontsize=11.5); a2.grid(axis='x',color=GRID,lw=0.6)
 for ax in (a1,a2):
     for s in ('top','right'): ax.spines[s].set_visible(False)
 plt.tight_layout(); plt.savefig('out/fig/fig34_combined.png',dpi=220); plt.close(); print('ok')
