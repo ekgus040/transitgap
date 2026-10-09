@@ -1,7 +1,11 @@
-# 소득 통제: 같은 구 안 비교(구 고정효과). 구 단위 소득·자동차 보유 차이를 흡수
+# 구 고정효과 및 사회경제적 대리지표 민감도 분석. 직접적인 소득 변수 통제는 아님.
 import pandas as pd, numpy as np, statsmodels.formula.api as smf
 D=pd.read_csv('work/dong_features_v2.csv',dtype={'code':str})
 D=D.dropna(subset=['sub_dist_km','route_stop_density','slope_pct','pop_density','elder_pct','recip_pct'])
+# 로그 변환 전 0/음수 확인: 무한대 입력으로 회귀가 실패하거나 표본이 암묵적으로 달라지는 문제 방지
+if (D[['route_stop_density','pop_density']] <= 0).any().any():
+    bad = D[(D.route_stop_density<=0)|(D.pop_density<=0)]
+    raise ValueError(f'회귀 로그 변환 불가: 밀도 0 이하 동 {len(bad)}곳. 정의와 처리 방법을 먼저 결정해야 합니다.')
 D['y']=100*D.car_share15; D['l_rsd']=np.log(D.route_stop_density); D['l_pd']=np.log(D.pop_density)
 f='y ~ sub_dist_km + l_rsd + slope_pct + l_pd + elder_pct + recip_pct'
 out=[]

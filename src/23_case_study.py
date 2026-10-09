@@ -15,5 +15,5 @@ for name in ['양재1동','도봉1동','진관동']:
         상위5목적지=', '.join(f"{info.loc[d,'lab']}({s:.0f}%)" for d,s in zip(top5.d,top5.share)),상위5합계_pct=round(top5.share.sum(),1),
         상위5목적지_평균역거리_km=round(np.average(top5.d.map(info.sub_dist_km),weights=top5.car),2),상위5구간_차량비중_pct=round(100*ms,1),
         낮시간_10_15시_pct=round(100*mid,1),출발지_역거리_km=round(info.loc[c,'sub_dist_km'],2),노선정류장밀도=round(info.loc[c,'route_stop_density'],1),
-        고령_pct=round(info.loc[c,'elder_pct'],1),수급_pct=round(info.loc[c,'recip_pct'],1),연간CO2_기본_t=round(t_base),감축_10pct_t=round(t_base*.1),감축_30pct_t=round(t_base*.3)))
+        고령_pct=round(info.loc[c,'elder_pct'],1),수급_pct=round(info.loc[c,'recip_pct'],1),연간CO2_기본_t=round(t_base),배출회피_10pct_t=round(t_base*.1),배출회피_30pct_t=round(t_base*.3)))
 R=pd.DataFrame(rows); print(R.T.to_string()); R.to_csv('out/case_study.csv',index=False,encoding='utf-8-sig')
