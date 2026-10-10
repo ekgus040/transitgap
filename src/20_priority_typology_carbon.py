@@ -14,6 +14,9 @@ F=['sub_dist_km','route_stop_density','pop_density','elder_pct','recip_pct','car
 Z=StandardScaler().fit_transform(G[F])
 for k in (2,3,4): print(k,'silhouette',round(silhouette_score(Z,KMeans(k,n_init=20,random_state=0).fit(Z).labels_),3))
 km=KMeans(3,n_init=20,random_state=0).fit(Z); G['cluster']=km.labels_
+# 군집 번호를 프로필로 고정(하위 스크립트 공통): A 외곽 저밀형=2(역 거리 최대), C 취약 고령형=0(고령 비율 최대), B 버스 연계 부족형=1
+_p=G.groupby('cluster')[['sub_dist_km','elder_pct']].mean(); _a=_p.sub_dist_km.idxmax(); _c=_p.drop(_a).elder_pct.idxmax(); _b=[k for k in _p.index if k not in (_a,_c)][0]
+G['cluster']=G.cluster.map({_a:2,_b:1,_c:0})
 prof=G.groupby('cluster')[F+['car15']].mean(); prof['n']=G.cluster.value_counts().sort_index()
 prof['sub_dist_km']=prof.sub_dist_km.round(2); print(prof.round(2).to_string())
 for c in range(3): print(c, G[G.cluster==c].sort_values('car15',ascending=False).apply(lambda r:f"{r.gu} {r.nm}",axis=1).tolist())
