@@ -6,11 +6,13 @@
 - 서울 내부 1–5km 차량 이동: 하루 872,021건(보수)–1,120,202건(기본), 차량 이동의 31.3–40.2%
 - LightGBM(출발-도착 행정동 쌍 22,882개) 출발 자치구 기준 공간 교차검증 R² 0.256 (거리만 쓴 기준 0.022, 버스 노선 변수 추가 전 0.234)
 - SHAP 주요 요인: 이동 거리, 도착·출발지 버스 노선·정류장 밀도(−), 경사, 지하철역 거리(+)
-- 공급 기준 접근성 5분위별 1–5km 차량 비중: 19.8 → 20.0 → 21.6 → 22.4 → 24.7%
+- 공급 기준 접근성 5분위별 1–5km 차량 비중: 18.8 → 20.6 → 21.3 → 23.1 → 24.8%
 - 구 고정효과 가중회귀: 지하철역 1km 멀수록 차량 비중 +2.4%p(p=0.006), 버스 노선·정류장 밀도 2배면 −1.2%p(p=0.011). 고소득 4개 구 제외 시에도 유지
-- 대중교통 공백 동 107곳(공급 기준) 중 단거리 차량 의존 우선 대상 40곳: A 외곽 저밀형 8, B 버스 연계 부족형 18, C 취약 고령형 14
+- 대중교통 공백 동 106곳(지하철 접근성 3지표 + 버스 노선·정류장 밀도) 중 단거리 차량 의존 우선 대상 36곳: A 외곽 저밀형 9, B 버스 연계 부족형 15, C 취약 고령형 12
 - 사례: 양재1동은 단거리 차량 이동의 47%가 역 가까운 5개 동으로 향함(출발지 역거리 1.64km → 목적지 0.95km). 우선 대상으로 꼽힌 진관동은 2021년 DRT '셔클' 운행지
-- 우선 대상 40곳 1–5km 차량 이동 연간 배출 1.6만–4.2만 tCO2, 10% 전환 시 1,600–4,200 t 감축. 서울 전체 10% 전환 잠재량 1.1만–3.1만 t
+- 우선 대상 36곳 1–5km 차량 이동 하루 12.4만 건(서울 내부 1–5km 차량 이동의 11.1%), 연간 배출 1.3만–2.8만–3.5만 tCO2. 서울 전체 10% 전환 잠재량 1.1만–3.1만 t
+- 모델 시나리오: 버스 노선·정류장 밀도를 서울 중앙값까지 올리면 차량 비중 −1.1~1.4%p, 하루 0.46만–0.55만 건(3.7–4.5%), 연 490–1,560 t 배출 회피. 역 접근성까지 개선하는 상한 8.3–9.5%, 1,100–3,350 t
+- 추가 데이터 검증: 5~9월 월간 동별 차량 비중 순위상관 0.989–0.997, 우선 대상 도착 기준 차량 비중 41.0–42.2%(나머지 27.8–28.8%), C유형 70세 이상 1인당 이동 1.08회(서울 1.59회, −32%), 정류소별 교통카드 승하차와 생활이동 버스 이동 로그 상관 0.72–0.76
 
 ## 폴더 구조
 ```
@@ -31,6 +33,8 @@ out/        결과 표·그림
 | 201_DT_201004_O020029_*.csv (주민등록인구 각 세별/동별, 2026 2/4) | 서울시 통계 |
 | 국민기초생활보장+수급자(2020+이후)_*.csv (2024) | 서울 열린데이터광장 DT201004O1100342020 |
 | HangJeongDong_ver20250401.geojson | github.com/vuski/admdongkor (통계청 SGIS, CC BY 4.0) |
+| extra/age_2026MM.csv (src/00_extra_agg_age.py로 집계) | 서울 열린데이터광장 수도권 생활이동(도착 행정동 성·연령별 수단), 2026년 5–9월 |
+| extra/bus_stops.csv (src/00_extra_agg_bus.py로 집계) | 서울 열린데이터광장 버스노선별 정류장별 승하차 인원(교통카드), 2026년 5–9월 |
 | slope_by_dong.txt (포함) | NASA SRTM 30m via OpenTopoData, 행정동별 평균 경사(%) |
 
 파일명이 다르면 각 스크립트의 경로를 맞춰 주세요.
@@ -42,7 +46,7 @@ python src/01_load_mobility.py      # 저장소 루트에서 실행
 python src/02_verify_headline.py
 ... 12_robustness.py까지 번호 순서대로 (04b 포함)
 python src/15_bus_routes.py         # 동별 버스 노선·정류장 밀도
-python src/16_gap_redefine.py       # 공백 지역 2단계 정의(107곳 → 우선 대상 40곳)
+python src/16_gap_redefine.py       # 공백 지역 2단계 정의 v3(106곳 → 우선 대상 36곳). 이전 정의는 16_gap_redefine_v2.py
 python src/17_income_control.py     # 구 고정효과 가중회귀(소득 직접 통제 아님)
 python src/18_sensitivity_rich_gu.py
 python src/19_model_v2.py           # LightGBM v2 + SHAP
@@ -50,18 +54,30 @@ python src/20_priority_typology_carbon.py
 python src/21_figures_v2.py         # 보고서 그림 1–4
 python src/22_robustness_v2.py
 python src/23_case_study.py         # 사례 분석(양재1동·도봉1동·진관동)
-python src/24_figures_compact.py    # 보고서용 압축 그림(그림 2, 그림 3·4)
+python src/24_figures_compact.py    # 보고서용 압축 그림(그림 2)
+python src/25_review_checks.py; python src/26_validation_audit.py
+python src/27_mobility_gap.py       # 이동 격차(1인당 이동, 대중교통 소요시간)
+python src/28_counterfactual_access.py  # 접근성 개선 시나리오(구 고정효과 계수)
+python src/29_station_coverage_check.py # 역 500m 면적 비율로 바꾼 회귀
+python src/33_figures_v4.py         # 보고서 그림 1, 그림 3·4 (30번 대체)
+python src/34_extra_age_season.py   # 추가 데이터 ①: 계절성·고령자 이동
+python src/35_extra_bus_validation.py   # 추가 데이터 ②: 교통카드로 버스 수단 코드 검증
+python src/36_selection_robust_v3.py    # 단일 접근성 지표로 재선정 시 겹침
+python src/37_export_v3.py          # out/dong_access_gap.csv, out/priority_clusters.csv
 ```
-- 10·11·13번은 1차 분석(공백 34곳 정의)으로, 최종 결과는 15–22번이 대체합니다.
+- 10·11·13번은 1차 분석(공백 34곳 정의)으로, 최종 결과는 15번 이후가 대체합니다. 30·31·32번은 이전 선정 기준(v2) 기록용입니다.
 - 수단 코드: 8=차량, 6=지하철, 7=도보, 4·5=버스, 9=기타 (서울시 발표 수단 비율과 대조해 판정)
 - 500m 미만 차량 행은 신호 잡음으로 제외, 시속 5km 미만 차량 행은 보수 추정에서 제외
 - LightGBM은 deterministic 설정으로 결과 재현 가능
 
 ## 주요 결과 파일
 - out/dong_access_gap.csv: 동별 접근성 지표, 공백 동·우선 대상 여부
-- out/priority40_clusters.csv: 우선 대상 40곳과 유형
+- out/priority_clusters.csv: 우선 대상 36곳과 유형
 - out/income_control_fe.csv: 구 고정효과 회귀 계수
-- out/priority_carbon.csv: 우선 대상 40곳 탄소 시나리오
+- out/priority_carbon.csv: 우선 대상 36곳 탄소 시나리오
+- out/counterfactual_access_carbon.csv: 접근성 개선 시나리오
+- out/elderly_mobility_by_type.csv, out/season_*.csv, out/bus_card_validation.csv: 추가 데이터 검증
+- out/selection_robust_v3.csv: 선정 강건성
 - out/case_study.csv: 사례 동 3곳의 목적지·시간대·탄소
 - out/fig/: 보고서 그림
 
@@ -79,3 +95,9 @@ python src/24_figures_compact.py    # 보고서용 압축 그림(그림 2, 그�
 
 ## 원자료 재실행 결과 (2026-10-08)
 위 수정을 원자료로 재실행한 결과 모든 핵심 수치의 변화가 1% 미만이었다(공간CV R² 0.256, 거리만 0.022, 구 고정효과 계수 동일, 요일 가중 배출 +0.07%). 비교표는 `out/rerun_comparison_1008.csv`, 상세는 `REPORT_CORRECTIONS.md` 참조. REPAIR_NOTES.md의 "보고서 수정 전 보류할 수치"는 재실행으로 해소되었다.
+
+## 선정 기준 변경 (2026-10-10, v3)
+- 지하철 접근성을 대표점 거리 하나에서 3지표 평균 백분위로 바꿨습니다: 행정동 대표점–최근접역 거리, 버스정류장에서 최근접역까지 평균 거리(정류장 가중), 역 500m 반경이 동 면적에서 차지하는 비율(역수).
+- 대표점 하나로는 역이 동 경계에 붙은 동(문정2동·청담동·반포본동 등)이 우선 대상에 잡히는 문제를 줄이기 위함입니다.
+- 결과: 공백 동 107→106곳, 우선 대상 40→36곳. 단일 지표로 각각 뽑아도 37–40곳 중 33곳이 겹칩니다(`out/selection_robust_v3.csv`).
+- 20번은 KMeans 군집 번호를 프로필(역 거리 최대=A, 고령 비율 최대=C)로 고정해 실행마다 유형 이름이 바뀌지 않게 했습니다.
