@@ -24,10 +24,10 @@ D['gap_supply']=D.access_gap>=D.access_gap.quantile(.75)
 med=np.average(D.car_share15,weights=D.all15)
 D['priority']=D.gap_supply & (D.car_share15>=D.car_share15.quantile(.75))
 print('공급 기준 공백 동:',int(D.gap_supply.sum()),'| 그중 차량 의존 상위25% 우선 대상:',int(D.priority.sum()))
-old=set(pd.read_csv('work/bak_v2/dong_features_v2.csv',dtype={'code':str}).query('priority').code); new=set(D[D.priority].code)
-print('v2(역 거리 기준) 우선 대상과 겹침',len(old&new),'| 신규',len(new-old),'| 빠짐',len(old-new))
-print('빠진 동:',D[D.code.isin(old-new)][['gu','nm','sub_dist_km','route_stop_density','bus_density']].round(2).to_string(index=False))
-print('추가된 동:',D[D.code.isin(new-old)][['gu','nm','sub_dist_km','route_stop_density','car_share15']].round(2).to_string(index=False))
+import os
+if os.path.exists('work/bak_v2/dong_features_v2.csv'):  # 선택: 이전(v2, 역 거리 단일 지표) 선정 결과가 있으면 비교 출력
+    old=set(pd.read_csv('work/bak_v2/dong_features_v2.csv',dtype={'code':str}).query('priority').code); new=set(D[D.priority].code)
+    print('v2(역 거리 기준) 우선 대상과 겹침',len(old&new),'| 신규',len(new-old),'| 빠짐',len(old-new))
 # 공급 공백 vs 비공백 차량 비중 (결과를 정의에 쓰지 않았을 때도 차이가 나는지)
 for k,gp in D.groupby('gap_supply'):
     print('gap_supply',k,'n',len(gp),'1~5km 차량 비중(이동량 가중)',round(100*gp.car15.sum()/gp.all15.sum(),1),'%')
